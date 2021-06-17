@@ -1,0 +1,297 @@
+-- phpMyAdmin SQL Dump
+-- version 4.9.3
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:8889
+-- Creato il: Gen 25, 2021 alle 01:17
+-- Versione del server: 5.7.26
+-- Versione PHP: 7.4.2
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `Tickets`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `Admin`
+--
+
+CREATE TABLE `Admin` (
+  `adminID` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `Admin`
+--
+
+INSERT INTO `Admin` (`adminID`) VALUES
+(1),
+(42),
+(420);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `Task`
+--
+
+CREATE TABLE `Task` (
+  `taskID` int(11) NOT NULL,
+  `dateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` text NOT NULL,
+  `ticketID` int(10) UNSIGNED NOT NULL,
+  `userID` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `Task`
+--
+
+INSERT INTO `Task` (`taskID`, `dateTime`, `description`, `ticketID`, `userID`) VALUES
+(11, '2021-01-25 01:37:05', 'He asignado un técnico para que pueda resolver el problema.', 22, 42),
+(12, '2021-01-25 01:37:52', 'Un técnico ha sido asignado para que intente resolver el problema.', 24, 42),
+(13, '2021-01-25 01:38:41', 'Un técnico ha sido asignado para que mire de resolver el problema.', 25, 42),
+(14, '2021-01-25 01:39:24', 'Mantenimiento ha arreglado el problema', 26, 42),
+(15, '2021-01-25 01:40:54', 'La empresa responsable vendrá el próximo martes para arreglar el problema. Avisaré los otros empleados para que no se suban al ascensor n.2 hasta que sea completamente seguro.', 27, 42),
+(16, '2021-01-25 01:41:36', 'He enviado un correo a RRUU. Actualizaré el estado una vez haya recibido una respuesta.', 28, 42),
+(17, '2021-01-25 01:43:11', 'He avisado al técnico hardware para que le eche un vistazo y devuelva el dinero.', 29, 42),
+(18, '2021-01-25 01:43:38', 'He asignado inmediatamente un técnico para que lo mire.', 30, 42),
+(19, '2021-01-25 01:44:17', 'He llamado a la empresa que instaló las baterías para que pueda mirar el problema.', 31, 42),
+(20, '2021-01-25 01:46:10', 'El problema es debido a las impostaciones de codificación de la base de datos de soporte. Se arreglará durante la próxima sesión de mantenimiento programada.', 25, 1975),
+(21, '2021-01-25 01:46:44', 'He podido recuperar los datos perdidos. Cierraré el ticket.', 22, 1975),
+(22, '2021-01-25 01:48:17', 'Desafortunadamente, no estoy autorizado a trabajar en las máquinas expendedoras. He notificado la empresa responsable y actualizado la escalabilidad del ticket. Seguiré el caso y avisaré en cuanto el problema esté resuelto.', 29, 1977),
+(23, '2021-01-25 01:49:33', 'El problema ha sido resuelto a través de una actualización del software de la impresora. Procedo con el cierre del ticket.', 24, 1978),
+(24, '2021-01-25 01:52:05', 'He arreglado temporalmente el problema bloqueando algunas conexiones entrantes en el firewall de la empresa. He notificado la empresa que nos ha proporcionado el software, enviarán especialistas cuanto antes.', 30, 1975);
+
+--
+-- Trigger `Task`
+--
+DELIMITER $$
+CREATE TRIGGER `Convert Task ID 0 to AUTO_INCREMENT` AFTER UPDATE ON `Task` FOR EACH ROW UPDATE Task
+SET taskID = NEW.taskID
+WHERE taskID = 0
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `Technician`
+--
+
+CREATE TABLE `Technician` (
+  `techID` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `Technician`
+--
+
+INSERT INTO `Technician` (`techID`) VALUES
+(2),
+(1975),
+(1977),
+(1978),
+(1979);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `Ticket`
+--
+
+CREATE TABLE `Ticket` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `dateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `creatorID` int(10) UNSIGNED NOT NULL,
+  `technicianID` int(10) UNSIGNED DEFAULT NULL,
+  `priority` int(11) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `scalability` int(11) NOT NULL DEFAULT '0',
+  `description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `Ticket`
+--
+
+INSERT INTO `Ticket` (`id`, `dateTime`, `creatorID`, `technicianID`, `priority`, `status`, `scalability`, `description`) VALUES
+(22, '2021-01-25 01:13:12', 1, 1975, 1, 3, 1, 'Una actualización de Windows ha hecho desaparecer unos cuantos datos importantes'),
+(23, '2021-01-25 01:14:39', 420, NULL, 0, 0, 0, 'No he podido ver ningúna opción vegana en la cafetería de la empresa. Pedir a RRUU que añadan'),
+(24, '2021-01-25 01:19:14', 10, 1978, 1, 3, 1, 'La impresora del segundo piso ha dejado de funcionar'),
+(25, '2021-01-25 01:21:55', 22, 1975, 3, 2, 1, 'El acceso a la aplicación de contabilidad falla si el nombre de usuario contiene carácteres no ASCII. Arreglar ASAP'),
+(26, '2021-01-25 01:23:56', 1982, NULL, 1, 3, 0, 'El distribudor automático de gel higienizante del primer piso ha dejado de funcionar. Avisar a mantenimiento'),
+(27, '2021-01-25 01:26:01', 1984, NULL, 3, 2, 2, 'Durante la última semana, el ascensor n.2 se ha parado 3 veces entre plantas, requeriendo quitar y volver a dar luz en el panel de control general. Llamar a la empresa responsable para que miren qué es que va mal'),
+(28, '2021-01-25 01:26:58', 1986, NULL, 0, 2, 0, 'La reducción de los horarios de abertura del bar de la empresa me afecta bastante, considerado que suelo trabajar en los turnos de noche. Se podría volver al horario anterior?'),
+(29, '2021-01-25 01:28:44', 1987, 1977, 1, 2, 2, 'Es la cuarta vez que la máquina expendedora en recepción se come mi dinero sin darme nada. Se puede hacer algo para que alguien me lo devuelva? Hablamos de al menos unos 10 euros.'),
+(30, '2021-01-25 01:32:43', 1978, 1975, 4, 2, 2, 'He detectado un error importante en la configuración de la base de datos principal que nos expone a ataques externos. Malintencionados podrían fácilmente entrar, borrar y/o robar datos. Arreglar urgentemente!!'),
+(31, '2021-01-25 01:35:34', 1979, NULL, 2, 2, 2, 'Las baterías de los SAIs de la sala servidores 3 señalan errores y capacidades reducidas');
+
+--
+-- Trigger `Ticket`
+--
+DELIMITER $$
+CREATE TRIGGER `SetTechnicianID` BEFORE INSERT ON `Ticket` FOR EACH ROW BEGIN
+       IF (NEW.technicianID = 0) THEN
+       	SET NEW.technicianID = NULL;
+       END IF;
+   END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `User`
+--
+
+CREATE TABLE `User` (
+  `userID` int(10) UNSIGNED NOT NULL,
+  `username` varchar(128) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  `surname` varchar(128) NOT NULL,
+  `birthDate` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `User`
+--
+
+INSERT INTO `User` (`userID`, `username`, `password`, `name`, `surname`, `birthDate`) VALUES
+(1, 'Test1', 'e1b849f9631ffc1829b2e31402373e3c', 'Test', '1', '1969-04-20'),
+(2, 'Test2', 'c454552d52d55d3ef56408742887362b', 'Test', '2', '1968-03-04'),
+(3, 'Test3', 'b3f66ec1535de7702c38e94408fa4a17', 'Test', '3', '1989-05-21'),
+(10, 'paulo.dybala10', '5f4dcc3b5aa765d61d8327deb882cf99', 'Paulo', 'Dybala', '1993-11-15'),
+(22, 'federico.chiesa22', '5f4dcc3b5aa765d61d8327deb882cf99', 'Federico', 'Chiesa', '1997-10-25'),
+(42, 'izar.castorina', '5f4dcc3b5aa765d61d8327deb882cf99', 'Izar', 'Castorina', '1997-12-01'),
+(420, 'lumalisan', '81dc9bdb52d04dc20036dbd8313ed055', 'Lisandro', 'Rocha', '1998-01-02'),
+(1975, 'bill.gates', '5f4dcc3b5aa765d61d8327deb882cf99', 'Bill', 'Gates', '1955-10-28'),
+(1977, 'steve.wozniak462', '5f4dcc3b5aa765d61d8327deb882cf99', 'Steve', 'Wozniak', '1950-08-11'),
+(1978, 'linus.torvalds382', '5f4dcc3b5aa765d61d8327deb882cf99', 'Linus', 'Torvalds', '1969-12-28'),
+(1979, 'guido.vanrossum236', '5f4dcc3b5aa765d61d8327deb882cf99', 'Guido', 'van Rossum', '1956-01-31'),
+(1980, 'joanalbert.vallori159', '5f4dcc3b5aa765d61d8327deb882cf99', 'Joan Albert', 'Vallori', '2000-01-01'),
+(1982, 'maria.fessa837', '5f4dcc3b5aa765d61d8327deb882cf99', 'Maria', 'Fessa', '1993-09-06'),
+(1984, 'juan.cuadrado721', '5f4dcc3b5aa765d61d8327deb882cf99', 'Juan', 'Cuadrado', '1988-05-26'),
+(1986, 'pere.palmerito90', '5f4dcc3b5aa765d61d8327deb882cf99', 'Pere', 'Palmerito', '1969-04-20'),
+(1987, 'hope.amen492', '5f4dcc3b5aa765d61d8327deb882cf99', 'Hope', 'Amen', '1988-06-09');
+
+--
+-- Trigger `User`
+--
+DELIMITER $$
+CREATE TRIGGER `autoIncrTestUPD` BEFORE UPDATE ON `User` FOR EACH ROW BEGIN
+IF (NEW.userID = 0) THEN
+	SET NEW.userID = (SELECT MAX(User.userID) FROM User)+1;
+END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `autoincrTest` BEFORE INSERT ON `User` FOR EACH ROW BEGIN
+IF (NEW.userID = 0) THEN
+	SET NEW.userID = NULL;
+END IF;
+END
+$$
+DELIMITER ;
+
+--
+-- Indici per le tabelle scaricate
+--
+
+--
+-- Indici per le tabelle `Admin`
+--
+ALTER TABLE `Admin`
+  ADD PRIMARY KEY (`adminID`);
+
+--
+-- Indici per le tabelle `Task`
+--
+ALTER TABLE `Task`
+  ADD PRIMARY KEY (`taskID`),
+  ADD KEY `ticketID` (`ticketID`),
+  ADD KEY `userID` (`userID`);
+
+--
+-- Indici per le tabelle `Technician`
+--
+ALTER TABLE `Technician`
+  ADD PRIMARY KEY (`techID`);
+
+--
+-- Indici per le tabelle `Ticket`
+--
+ALTER TABLE `Ticket`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `creatorID` (`creatorID`,`technicianID`) USING BTREE,
+  ADD KEY `ticket_ibfk_2` (`technicianID`);
+
+--
+-- Indici per le tabelle `User`
+--
+ALTER TABLE `User`
+  ADD PRIMARY KEY (`userID`);
+
+--
+-- AUTO_INCREMENT per le tabelle scaricate
+--
+
+--
+-- AUTO_INCREMENT per la tabella `Task`
+--
+ALTER TABLE `Task`
+  MODIFY `taskID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT per la tabella `Technician`
+--
+ALTER TABLE `Technician`
+  MODIFY `techID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1980;
+
+--
+-- AUTO_INCREMENT per la tabella `Ticket`
+--
+ALTER TABLE `Ticket`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT per la tabella `User`
+--
+ALTER TABLE `User`
+  MODIFY `userID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1988;
+
+--
+-- Limiti per le tabelle scaricate
+--
+
+--
+-- Limiti per la tabella `Admin`
+--
+ALTER TABLE `Admin`
+  ADD CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`adminID`) REFERENCES `User` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Limiti per la tabella `Task`
+--
+ALTER TABLE `Task`
+  ADD CONSTRAINT `task_ibfk_1` FOREIGN KEY (`ticketID`) REFERENCES `Ticket` (`id`),
+  ADD CONSTRAINT `task_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `User` (`userID`);
+
+--
+-- Limiti per la tabella `Technician`
+--
+ALTER TABLE `Technician`
+  ADD CONSTRAINT `technician_ibfk_1` FOREIGN KEY (`techID`) REFERENCES `User` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Limiti per la tabella `Ticket`
+--
+ALTER TABLE `Ticket`
+  ADD CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`creatorID`) REFERENCES `User` (`userID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`technicianID`) REFERENCES `Technician` (`techID`) ON DELETE SET NULL ON UPDATE NO ACTION;
